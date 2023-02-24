@@ -3,6 +3,10 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState, useEffect, useSigner } from 'react';
 import { useProvider, useAccount } from 'wagmi'
 import { ethers } from 'ethers'
+import swapABI from "../../ABI/swapABI.json"
+import tokenOneABI from "../../ABI/tokenOne.json";
+import tokenTwoABI from "../../ABI/tokenTwo.json";
+
 
 const Balance = ({ title, price }) => {
   return (
@@ -16,16 +20,17 @@ const Balance = ({ title, price }) => {
 };
 
 function Index() {
-  const [currentBal, setCurrentBal] = useState('');
-  const [borrowBal, setBorrowBal] = useState('');
+  const [currentBal, setCurrentBal] = useState(0);
+  const [borrowBal, setBorrowBal] = useState(0);
   const { address, isConnecting, isDisconnected } = useAccount();
   const provider = useProvider()
 
-  const getAccount = async () => {
-    console.log("connected address", address)
-  }
+  let swapContract_addr = "0xaF44BEDF0DDbf86D61e15848481F9310D2F9B480";
+  let tokenOne = "0x9Dae57ca18095646f6847912e8151e044c87E40f";
+  let tokenTwo = "0xc7899935aa07e1B70698c6EA1468884a3d232Cf3";
 
-  const swapTransaction = async (address) => {
+
+  const swapTransaction = async () => {
     console.log("function")
     try {
       const { ethereum } = window;
@@ -33,18 +38,17 @@ function Index() {
         const providerOne = new ethers.providers.Web3Provider(ethereum);
         const signer = providerOne.getSigner()
 
-        // console.log(address)
+        const swapContract = new ethers.Contract(
+          swapContract_addr,
+          swapABI,
+          signer
+        );
 
-        // const signer = provider.getSigner();
-        // let userAddress = await signer.getAddress()
-        // console.log("userAddress: ", address)
+        console.log('Going to pop window for gas fee');
+        let deployedtxn = await swapContract.swapTokenOne(999, { gasPrice: ethers.utils.parseUnits('200', 'gwei'), gasLimit: 2000000 });
 
-        // let message = `0x000000000000000000000000${address.substring(2)}`;
-        // let hash = web3.eth.accounts.hashMessage(message);
-        // console.log("hash", hash)
-        // let { signature } = signerOwn.sign(message);
-        // console.log("signerOwn: ", signerOwn.address)
-        // console.log("signature: ", signature)
+        console.log('Swapping the token..');
+        await deployedtxn.wait();
 
       }
     } catch (err) {
@@ -52,6 +56,37 @@ function Index() {
     }
   }
 
+  useEffect(() => {
+    const func = async () => {
+      const { ethereum } = window;
+      if (ethereum) {
+        if (address) {
+          const providerOne = new ethers.providers.Web3Provider(ethereum);
+          const signer = providerOne.getSigner()
+
+          const TokenOneContract = new ethers.Contract(
+            tokenOne,
+            tokenOneABI,
+            signer
+          );
+          const TokenTwoContract = new ethers.Contract(
+            tokenTwo,
+            tokenTwoABI,
+            signer
+          );
+
+          let tokenOneBalance = await TokenOneContract.balanceOf(await signer.getAddress());
+          let tokenTwoBalance = await TokenTwoContract.balanceOf(await signer.getAddress());
+          setCurrentBal(tokenOneBalance);
+          setBorrowBal(tokenTwoBalance);
+        }
+
+      }
+    }
+
+    func();
+
+  })
   return (
 
     <div className="w-full h-min-ful bg-primary h-max pb-24 relative">
@@ -66,7 +101,7 @@ function Index() {
       </nav>
       <section className="flex flex-col w-full items-center mt-[100px] ">
         <div className="flex gap-x-[278px]">
-          <Balance title={"Supply Balance"} price={"2000"} />
+          <Balance title={"Supply Balance"} price={`${currentBal}`} />
           <div className="flex backdrop-blur-[118px]">
             <div className="flex w-[180px] h-[180px] justify-center items-center bg-neon-grad rounded-full">
               <span className="flex flex-col items-center justify-center w-[90%] h-[90%] rounded-full">
@@ -79,7 +114,11 @@ function Index() {
               </span>
             </div>
           </div>
-          <Balance title={"Borrow Balance"} price={"2000"} />
+          <button className="bg-yellow text-white" onClick={swapTransaction}>
+            swap tokens
+          </button>
+          <Balance title={"Borrow Balance"} price={`${borrowBal}`} />
+
         </div>
         <div className="flex items-center mt-[74px]">
           <p className="font-medium text-[16px] mr-[8px] text-[#FCFCFC] opacity-[0.6]">
