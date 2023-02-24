@@ -1,4 +1,8 @@
 import React from "react";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useState, useEffect, useSigner } from 'react';
+import { useProvider, useAccount } from 'wagmi'
+import { ethers } from 'ethers'
 
 const Balance = ({ title, price }) => {
   return (
@@ -12,14 +16,56 @@ const Balance = ({ title, price }) => {
 };
 
 function Index() {
+  const [currentBal, setCurrentBal] = useState('');
+  const [borrowBal, setBorrowBal] = useState('');
+  const { address, isConnecting, isDisconnected } = useAccount();
+  const provider = useProvider()
+
+  const getAccount = async () => {
+    console.log("connected address", address)
+  }
+
+  const swapTransaction = async (address) => {
+    console.log("function")
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const providerOne = new ethers.providers.Web3Provider(ethereum);
+        const signer = providerOne.getSigner()
+
+        // console.log(address)
+
+        // const signer = provider.getSigner();
+        // let userAddress = await signer.getAddress()
+        // console.log("userAddress: ", address)
+
+        // let message = `0x000000000000000000000000${address.substring(2)}`;
+        // let hash = web3.eth.accounts.hashMessage(message);
+        // console.log("hash", hash)
+        // let { signature } = signerOwn.sign(message);
+        // console.log("signerOwn: ", signerOwn.address)
+        // console.log("signature: ", signature)
+
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
+
     <div className="w-full h-min-ful bg-primary h-max pb-24 relative">
       <nav className="flex px-[72px] pt-[44px] w-[1409.5px] mx-auto">
+        <ConnectButton className="m" />
+
         <img
           className="w-[110px] h-[58px] object-contain"
           src="/assets/logo.png"
           alt=""
         />
+        <button className="bg-blue text-white h-[65px] w-[514px] px-[33px] rounded-3xl text-[24px] font-bold mt-2 mx-auto" onClick={getAccount}>
+          test
+        </button>
       </nav>
       <section className="flex flex-col w-full items-center mt-[100px] ">
         <div className="flex gap-x-[278px]">
