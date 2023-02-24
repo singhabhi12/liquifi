@@ -56,16 +56,13 @@ function Index() {
 
     <div className="w-full h-min-ful bg-primary h-max pb-24 relative">
       <nav className="flex px-[72px] pt-[44px] w-[1409.5px] mx-auto">
-        <ConnectButton className="m" />
 
         <img
           className="w-[110px] h-[58px] object-contain"
           src="/assets/logo.png"
           alt=""
         />
-        <button className="bg-blue text-white h-[65px] w-[514px] px-[33px] rounded-3xl text-[24px] font-bold mt-2 mx-auto" onClick={getAccount}>
-          test
-        </button>
+        <ConnectButton className="mr-6 mt-4" />
       </nav>
       <section className="flex flex-col w-full items-center mt-[100px] ">
         <div className="flex gap-x-[278px]">
