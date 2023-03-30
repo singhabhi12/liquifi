@@ -45,7 +45,7 @@ function Index() {
         console.log("Going to pop window for gas fee");
         let deployedtxn = await swapContract.swapTokenOne(999, {
           gasPrice: ethers.utils.parseUnits("200", "gwei"),
-          gasLimit: 2000000,
+          // gasLimit: 2000000,
         });
 
         console.log("Swapping the token..");
