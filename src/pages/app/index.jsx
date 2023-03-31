@@ -81,7 +81,7 @@ function Index() {
         );
 
         console.log("Going to pop window for gas fee");
-        let deployedtxn = await swapContract.swapTokenTwo(1000 * 10 ** 18, {
+        let deployedtxn = await swapContract.swapTokenTwo(999, {
           gasPrice: ethers.utils.parseUnits("150", "gwei"),
           gasLimit: 500000,
         });
@@ -93,7 +93,6 @@ function Index() {
       console.log(err);
     }
   };
-  let tokenOneBalance, tokenTwoBalance
   useEffect(() => {
     const func = async () => {
       const { ethereum } = window;
@@ -114,10 +113,10 @@ function Index() {
             signer
           );
 
-          tokenOneBalance = await TokenOneContract.balanceOf(
+          let tokenOneBalance = await TokenOneContract.balanceOf(
             await signer.getAddress()
           );
-          tokenTwoBalance = await TokenTwoContract.balanceOf(
+          let tokenTwoBalance = await TokenTwoContract.balanceOf(
             await signer.getAddress()
           );
           setCurrentBal(tokenOneBalance);
@@ -134,7 +133,7 @@ function Index() {
     <>
       <div className="w-full h-min-ful bg-primary h-max pb-24 relative">
         <nav className="flex px-[72px] pt-[44px] w-[1409.5px] mx-auto">
-          <img
+          <image
             className="w-[110px] h-[58px] object-contain"
             src="/assets/logo.png"
             alt=""
@@ -157,7 +156,7 @@ function Index() {
                   </span>
                 </span>
               </div>
-              {borrowBal > 0 ?
+              {setVal > 0 ?
                 <button
                   className="mt-6 text-white bg-neon-grad rounded-lg py-2"
                   onClick={swapTransaction}
@@ -214,14 +213,14 @@ function Index() {
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2,].map((ele) => {
+                    {[1, 2].map((ele) => {
                       return (
-                        <tr className=" border-b dark:bg-gray-800 border-transparent">
+                        <tr key={ele.id} className=" border-b dark:bg-gray-800 border-transparent">
                           <th
                             scope="row"
                             className="flex items-center px-6 py-4 text-[16px] font-medium text-white whitespace-nowrap dark:text-white"
                           >
-                            <img
+                            <image
                               className="mr-[14px]"
                               src="/assets/aave.svg"
                               alt=""
@@ -267,14 +266,14 @@ function Index() {
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2,].map((ele) => {
+                    {[1, 2].map((ele) => {
                       return (
-                        <tr className=" border-b dark:bg-gray-800 border-transparent">
+                        <tr key={ele.id} className=" border-b dark:bg-gray-800 border-transparent">
                           <th
                             scope="row"
                             className="flex items-center px-6 py-4 text-[16px] font-medium text-white whitespace-nowrap dark:text-white"
                           >
-                            <img
+                            <image
                               className="mr-[14px]"
                               src="/assets/aave.svg"
                               alt=""
@@ -310,7 +309,7 @@ const Modal = () => {
     <div className="flex items-center justify-center top-0 absolute w-full min-h-screen h-full bg-backdrop">
       <div className="flex flex-col w-[580px] h-max m-h-[1000px] bg-[#393939] mt-[48px] rounded-lg">
         <span className="flex items-center w-full justify-center mt-[34px]">
-          <img className="w-12 h-12 mr-5" src="/assets/aave.svg" alt="" />
+          <image className="w-12 h-12 mr-5" src="/assets/aave.svg" alt="" />
           <h1 className="text-white text-[24px]">Aave Token</h1>
         </span>
         <h2 className="text-white mx-auto w-min font-medium text-[56px] mt-7">
@@ -359,7 +358,7 @@ const Token = ({ bdTrue }) => {
         "flex w-full py-6  border-gray-500" + (bdTrue ? " border-b-[1px]" : "")
       }
     >
-      <img src="/assets/aave.svg" alt="" />
+      <image src="/assets/aave.svg" alt="" />
       <h1 className="ml-4 text-[24px] font-semibold text-gray-400">
         Supply APY
       </h1>
