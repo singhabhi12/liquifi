@@ -161,7 +161,7 @@ function Index() {
                   </span>
                 </span>
               </div>
-              {setVal < 0 ?
+              {setVal < 1 ?
                 <button
                   className="mt-6 text-white bg-neon-grad rounded-lg py-2"
                   onClick={swapTransaction}
