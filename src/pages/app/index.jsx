@@ -3,9 +3,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState, useEffect } from "react";
 import { useProvider, useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
-import swapABI from "../../ABI/swapABI.json";
-import tokenOneABI from "../../ABI/tokenOne.json";
-import tokenTwoABI from "../../ABI/tokenTwo.json";
+import swapABI from "../../ABI/swapAbi.json";
+import tokenOneABI from "../ABI/tokenOne.json";
+import tokenTwoABI from "../ABI/tokenTwo.json";
 
 const Balance = ({ title, price }) => {
   return (
@@ -88,6 +88,7 @@ function Index() {
 
         console.log("Swapping the token..");
         await deployedtxn.wait();
+        setCurrentVal(0)
       }
     } catch (err) {
       console.log(err);
@@ -222,7 +223,7 @@ function Index() {
                           >
                             <image
                               className="mr-[14px]"
-                              src="/assets/aave.svg"
+                              src="/assets/usdc.webp"
                               alt=""
                             />
                             Aave Token
