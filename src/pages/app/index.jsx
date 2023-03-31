@@ -27,9 +27,9 @@ function Index() {
   const { data } = useSigner();
   const provider = useProvider();
 
-  let swapContract_addr = "0x049524137591c1E44363963A3Ac052bb7e8dac91";
-  let tokenOne = "0x8F0FeFe0f1e12041b9248a13d0aA6Ce11FF519D8"
-  let tokenTwo = "0xe3b9f02491AEd6154424CFBA8614569a55e541f0"
+  let swapContract_addr = "0xf22fb2B487dA35F65A44d7974EDbB58196C851fE";
+  let tokenOne = "0x7524908A0D2049E564EfceA8888EF21A3405AB53"
+  let tokenTwo = "0xB95be4d940ab70077AE73A0B1eED1005d52C693e"
 
   // let swapContract_addr = "0x257AE1CB77262A02289EB75883BaFc0bc662A549";
   // let tokenOne = "0x63a7Ba840255CF3bD3C9A196fE7457F2547Ec4c8";
@@ -115,15 +115,17 @@ function Index() {
           );
 
           let tokenOneBalance = await TokenOneContract.balanceOf(
-            await signer.getAddress()
+            swapContract_addr
           );
           let tokenTwoBalance = await TokenTwoContract.balanceOf(
-            await signer.getAddress()
+            swapContract_addr
           );
           console.log("two", Number(tokenTwoBalance))
           console.log("one", Number(tokenOneBalance))
-          setCurrentBal(ethers.utils.formatEther((tokenOneBalance)));
-          setBorrowBal(ethers.utils.formatEther((tokenTwoBalance)));
+          if (tokenOneBalance > 0 || tokenTwoBalance > 0) {
+            setCurrentBal(ethers.utils.formatEther((tokenOneBalance)));
+            setBorrowBal(ethers.utils.formatEther((tokenTwoBalance)));
+          }
 
         }
       }
@@ -159,7 +161,7 @@ function Index() {
                   </span>
                 </span>
               </div>
-              {setVal > 0 ?
+              {setVal < 0 ?
                 <button
                   className="mt-6 text-white bg-neon-grad rounded-lg py-2"
                   onClick={swapTransaction}
