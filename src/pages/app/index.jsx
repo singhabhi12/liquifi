@@ -3,9 +3,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState, useEffect } from "react";
 import { useProvider, useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
-import swapABI from "../../ABI/swapAbi.json";
-import tokenOneABI from "../ABI/tokenOne.json";
-import tokenTwoABI from "../ABI/tokenTwo.json";
+import swapABI from "../../../ABI/swapAbi.json";
+import tokenOneABI from "../../../ABI/tokenOne.json";
+import tokenTwoABI from "../../../ABI/tokenTwo.json";
 
 const Balance = ({ title, price }) => {
   return (
@@ -27,9 +27,9 @@ function Index() {
   const { data } = useSigner();
   const provider = useProvider();
 
-  let swapContract_addr = "0x9a568743D84dEb6676f3dCFf3b1DA4Bf1bDE7103";
-  let tokenOne = "0x01aC4e2B71b06BDc61F7c63D9D81ad8fc0e277EB"
-  let tokenTwo = "0x99875975f46200207D6147C712788Bc39C2808e3"
+  let swapContract_addr = "0x049524137591c1E44363963A3Ac052bb7e8dac91";
+  let tokenOne = "0x8F0FeFe0f1e12041b9248a13d0aA6Ce11FF519D8"
+  let tokenTwo = "0xe3b9f02491AEd6154424CFBA8614569a55e541f0"
 
   // let swapContract_addr = "0x257AE1CB77262A02289EB75883BaFc0bc662A549";
   // let tokenOne = "0x63a7Ba840255CF3bD3C9A196fE7457F2547Ec4c8";
@@ -120,8 +120,10 @@ function Index() {
           let tokenTwoBalance = await TokenTwoContract.balanceOf(
             await signer.getAddress()
           );
-          setCurrentBal(tokenOneBalance);
-          setBorrowBal(tokenTwoBalance);
+          console.log("two", Number(tokenTwoBalance))
+          console.log("one", Number(tokenOneBalance))
+          setCurrentBal(ethers.utils.formatEther((tokenOneBalance)));
+          setBorrowBal(ethers.utils.formatEther((tokenTwoBalance)));
 
         }
       }
