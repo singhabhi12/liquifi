@@ -1,7 +1,7 @@
 import React from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useState, useEffect, useSigner } from "react";
-import { useProvider, useAccount } from "wagmi";
+import { useState, useEffect } from "react";
+import { useProvider, useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
 import swapABI from "../../ABI/swapABI.json";
 import tokenOneABI from "../../ABI/tokenOne.json";
@@ -21,12 +21,19 @@ const Balance = ({ title, price }) => {
 function Index() {
   const [currentBal, setCurrentBal] = useState(0);
   const [borrowBal, setBorrowBal] = useState(0);
+  const [setVal, setCurrentVal] = useState(0)
+
   const { address, isConnecting, isDisconnected } = useAccount();
+  const { data } = useSigner();
   const provider = useProvider();
 
-  let swapContract_addr = "0xaF44BEDF0DDbf86D61e15848481F9310D2F9B480";
-  let tokenOne = "0x9Dae57ca18095646f6847912e8151e044c87E40f";
-  let tokenTwo = "0xc7899935aa07e1B70698c6EA1468884a3d232Cf3";
+  let swapContract_addr = "0x9a568743D84dEb6676f3dCFf3b1DA4Bf1bDE7103";
+  let tokenOne = "0x01aC4e2B71b06BDc61F7c63D9D81ad8fc0e277EB"
+  let tokenTwo = "0x99875975f46200207D6147C712788Bc39C2808e3"
+
+  // let swapContract_addr = "0x257AE1CB77262A02289EB75883BaFc0bc662A549";
+  // let tokenOne = "0x63a7Ba840255CF3bD3C9A196fE7457F2547Ec4c8";
+  // let tokenTwo = "0x0E3dc57B55DB7DdB986AF1b7f821Bd379a4b7455";
 
   const swapTransaction = async () => {
     console.log("function");
@@ -34,8 +41,8 @@ function Index() {
       const { ethereum } = window;
       if (ethereum) {
         const providerOne = new ethers.providers.Web3Provider(ethereum);
-        const signer = providerOne.getSigner();
-
+        const signer = data;
+        if (!signer) return;
         const swapContract = new ethers.Contract(
           swapContract_addr,
           swapABI,
@@ -44,8 +51,39 @@ function Index() {
 
         console.log("Going to pop window for gas fee");
         let deployedtxn = await swapContract.swapTokenOne(999, {
-          gasPrice: ethers.utils.parseUnits("200", "gwei"),
-          // gasLimit: 2000000,
+          gasPrice: ethers.utils.parseUnits("150", "gwei"),
+          gasLimit: 300000,
+        });
+
+        console.log("Swapping the token..");
+        let reciept = await deployedtxn.wait();
+        setCurrentVal(10)
+        console.log(reciept)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+  const returnSwapTransaction = async () => {
+    console.log("function");
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const providerOne = new ethers.providers.Web3Provider(ethereum);
+        const signer = data;
+        if (!signer) return;
+        const swapContract = new ethers.Contract(
+          swapContract_addr,
+          swapABI,
+          signer
+        );
+
+        console.log("Going to pop window for gas fee");
+        let deployedtxn = await swapContract.swapTokenTwo(1000 * 10 ** 18, {
+          gasPrice: ethers.utils.parseUnits("150", "gwei"),
+          gasLimit: 500000,
         });
 
         console.log("Swapping the token..");
@@ -55,14 +93,15 @@ function Index() {
       console.log(err);
     }
   };
-
+  let tokenOneBalance, tokenTwoBalance
   useEffect(() => {
     const func = async () => {
       const { ethereum } = window;
       if (ethereum) {
         if (address) {
           const providerOne = new ethers.providers.Web3Provider(ethereum);
-          const signer = providerOne.getSigner();
+          const signer = data;
+          if (!signer) return;
 
           const TokenOneContract = new ethers.Contract(
             tokenOne,
@@ -75,14 +114,15 @@ function Index() {
             signer
           );
 
-          let tokenOneBalance = await TokenOneContract.balanceOf(
+          tokenOneBalance = await TokenOneContract.balanceOf(
             await signer.getAddress()
           );
-          let tokenTwoBalance = await TokenTwoContract.balanceOf(
+          tokenTwoBalance = await TokenTwoContract.balanceOf(
             await signer.getAddress()
           );
           setCurrentBal(tokenOneBalance);
           setBorrowBal(tokenTwoBalance);
+
         }
       }
     };
@@ -117,12 +157,22 @@ function Index() {
                   </span>
                 </span>
               </div>
-              <button
-                className="mt-6 text-white bg-neon-grad rounded-lg py-2"
-                onClick={swapTransaction}
-              >
-                Swap Tokens
-              </button>
+              {borrowBal > 0 ?
+                <button
+                  className="mt-6 text-white bg-neon-grad rounded-lg py-2"
+                  onClick={swapTransaction}
+                >
+                  Swap Tokens
+                </button>
+                :
+                <button
+                  className="mt-6 text-white bg-neon-grad rounded-lg py-2"
+                  onClick={returnSwapTransaction}
+                >
+                  return Tokens
+                </button>
+              }
+
             </div>
 
             <Balance title={"Borrow Balance"} price={`${borrowBal}`} />
@@ -164,7 +214,7 @@ function Index() {
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2, 3, 4, 5, 6].map((ele) => {
+                    {[1, 2,].map((ele) => {
                       return (
                         <tr className=" border-b dark:bg-gray-800 border-transparent">
                           <th
@@ -217,7 +267,7 @@ function Index() {
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2, 3, 4, 5, 6].map((ele) => {
+                    {[1, 2,].map((ele) => {
                       return (
                         <tr className=" border-b dark:bg-gray-800 border-transparent">
                           <th
@@ -229,7 +279,7 @@ function Index() {
                               src="/assets/aave.svg"
                               alt=""
                             />
-                            Aave Token
+                            USDC Token
                           </th>
                           <td className="px-6 py-4 text-[16px] text-white">
                             0.17%
