@@ -21,15 +21,15 @@ const Balance = ({ title, price }) => {
 function Index() {
   const [currentBal, setCurrentBal] = useState(0);
   const [borrowBal, setBorrowBal] = useState(0);
-  const [setVal, setCurrentVal] = useState(0)
+  const [setVal, setCurrentVal] = useState(0);
 
   const { address, isConnecting, isDisconnected } = useAccount();
   const { data } = useSigner();
   const provider = useProvider();
 
   let swapContract_addr = "0xf22fb2B487dA35F65A44d7974EDbB58196C851fE";
-  let tokenOne = "0x7524908A0D2049E564EfceA8888EF21A3405AB53"
-  let tokenTwo = "0xB95be4d940ab70077AE73A0B1eED1005d52C693e"
+  let tokenOne = "0x7524908A0D2049E564EfceA8888EF21A3405AB53";
+  let tokenTwo = "0xB95be4d940ab70077AE73A0B1eED1005d52C693e";
 
   // let swapContract_addr = "0x257AE1CB77262A02289EB75883BaFc0bc662A549";
   // let tokenOne = "0x63a7Ba840255CF3bD3C9A196fE7457F2547Ec4c8";
@@ -57,14 +57,13 @@ function Index() {
 
         console.log("Swapping the token..");
         let reciept = await deployedtxn.wait();
-        setCurrentVal(10)
-        console.log(reciept)
+        setCurrentVal(10);
+        console.log(reciept);
       }
     } catch (err) {
       console.log(err);
     }
   };
-
 
   const returnSwapTransaction = async () => {
     console.log("function");
@@ -88,12 +87,13 @@ function Index() {
 
         console.log("Swapping the token..");
         await deployedtxn.wait();
-        setCurrentVal(0)
+        setCurrentVal(0);
       }
     } catch (err) {
       console.log(err);
     }
   };
+
   useEffect(() => {
     const func = async () => {
       const { ethereum } = window;
@@ -120,13 +120,12 @@ function Index() {
           let tokenTwoBalance = await TokenTwoContract.balanceOf(
             swapContract_addr
           );
-          console.log("two", Number(tokenTwoBalance))
-          console.log("one", Number(tokenOneBalance))
+          console.log("two", Number(tokenTwoBalance));
+          console.log("one", Number(tokenOneBalance));
           if (tokenOneBalance > 0 || tokenTwoBalance > 0) {
-            setCurrentBal(ethers.utils.formatEther((tokenOneBalance)));
-            setBorrowBal(ethers.utils.formatEther((tokenTwoBalance)));
+            setCurrentBal(ethers.utils.formatEther(tokenOneBalance));
+            setBorrowBal(ethers.utils.formatEther(tokenTwoBalance));
           }
-
         }
       }
     };
@@ -134,9 +133,12 @@ function Index() {
     func();
   });
 
+  const [borrowShow, setborrowShow] = useState(false);
+  const [returnShow, setreturnShow] = useState(false);
+
   return (
     <>
-      <div className="w-full h-min-ful bg-primary h-max pb-24 relative">
+      <div className="w-full h-screen bg-primary  pb-24 relative">
         <nav className="flex px-[72px] pt-[44px] w-[1409.5px] mx-auto">
           <image
             className="w-[110px] h-[58px] object-contain"
@@ -147,210 +149,88 @@ function Index() {
             <ConnectButton />
           </span>
         </nav>
-        <section className="flex flex-col w-full items-center mt-[100px] ">
+        <section className="flex flex-col w-full items-center mt-[100px] h-min-full">
           <div className="flex gap-x-[278px]">
             <Balance title={"Supply Balance"} price={`${currentBal}`} />
             <div className="flex backdrop-blur-[118px] flex-col">
-              <div className="flex w-[180px] h-[180px] justify-center items-center bg-neon-grad rounded-full">
-                <span className="flex flex-col items-center justify-center w-[90%] h-[90%] rounded-full">
-                  <span className="flex flex-col items-center justify-center w-[100%] h-[100%] bg-[#191919] rounded-full">
-                    <p className="text-[20px] text-[#FCFCFC] opacity-[0.6]">
-                      Net APY
-                    </p>
-                    <h2 className="text-[40px] text-white ">4.9%</h2>
-                  </span>
-                </span>
-              </div>
-              {setVal < 1 ?
+              {setVal < 1 ? (
                 <button
-                  className="mt-6 text-white bg-neon-grad rounded-lg py-2"
-                  onClick={swapTransaction}
+                  className="mt-6 text-white bg-neon-grad rounded-lg py-2 w-max px-4"
+                  onClick={() => {
+                    setborrowShow(true);
+                  }}
                 >
                   Borrow Tokens
                 </button>
-                :
+              ) : (
                 <button
                   className="mt-6 text-white bg-neon-grad rounded-lg py-2"
-                  onClick={returnSwapTransaction}
+                  onClick={() => {
+                    setreturnShow(true);
+                  }}
                 >
                   return Tokens
                 </button>
-              }
-
+              )}
             </div>
-
             <Balance title={"Borrow Balance"} price={`${borrowBal}`} />
           </div>
           <div className="flex items-center mt-[74px]">
-            <p className="font-medium text-[16px] mr-[8px] text-[#FCFCFC] opacity-[0.6]">
+            {/* <p className="font-medium text-[16px] mr-[8px] text-[#FCFCFC] opacity-[0.6]">
               Borrow limit
-            </p>
-            <h4 className="text-white text-[20px] mr-[8px]">45%</h4>
+            </p> */}
+            {/* <h4 className="text-white text-[20px] mr-[8px]">45%</h4> */}
             <div className="w-[809px] bg-white h-[4px] rounded-lg">
-              <span className="flex w-[40%] h-full bg-neon-grad"></span>
+              <span className="flex w-[100%] h-full bg-neon-grad"></span>
             </div>
-            <p className="font-medium text-[16px] ml-[19px] text-[#FCFCFC] opacity-[0.6]">
+            {/* <p className="font-medium text-[16px] ml-[19px] text-[#FCFCFC] opacity-[0.6]">
               $2000
-            </p>
-          </div>
-
-          <div className="flex gap-x-[110px]">
-            <div className="flex flex-col bg-[#393939]  w-[580px] h-fit rounded-[13px] mt-[74px]">
-              <h1 className="font-semibold text-[24px] text-white mx-[24px] my-[24px]">
-                Supply Markets
-              </h1>
-              <div className="relative overflow-x-auto w-full">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-[#FCFCFC] opacity-[0.6] font-medium uppercase border-y  dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th scope="col" className="px-6 py-3">
-                        Assets
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        APY
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Wallet
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Collateral
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[1, 2].map((ele) => {
-                      return (
-                        <tr key={ele.id} className=" border-b dark:bg-gray-800 border-transparent">
-                          <th
-                            scope="row"
-                            className="flex items-center px-6 py-4 text-[16px] font-medium text-white whitespace-nowrap dark:text-white"
-                          >
-                            <image
-                              className="mr-[14px]"
-                              src="/assets/usdc.webp"
-                              alt=""
-                            />
-                            Aave Token
-                          </th>
-                          <td className="px-6 py-4 text-[16px] text-white">
-                            0.17%
-                          </td>
-                          <td className="px-6 py-4 text-[16px] text-white">
-                            100 AAVE
-                          </td>
-                          <td className="px-6 text-[16px] text-white justify-center  flex ">
-                            <Toggle />
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div className="flex flex-col bg-[#393939]  w-[580px] h-fit rounded-[13px] mt-[74px]">
-              <h1 className="font-semibold text-[24px] text-white mx-[24px] my-[24px]">
-                Supply Markets
-              </h1>
-              <div className="relative overflow-x-auto w-full">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-[#FCFCFC] opacity-[0.6] font-medium uppercase border-y  dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th scope="col" className="px-6 py-3">
-                        Assets
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        APY
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Wallet
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Liquidity
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[1, 2].map((ele) => {
-                      return (
-                        <tr key={ele.id} className=" border-b dark:bg-gray-800 border-transparent">
-                          <th
-                            scope="row"
-                            className="flex items-center px-6 py-4 text-[16px] font-medium text-white whitespace-nowrap dark:text-white"
-                          >
-                            <image
-                              className="mr-[14px]"
-                              src="/assets/aave.svg"
-                              alt=""
-                            />
-                            USDC Token
-                          </th>
-                          <td className="px-6 py-4 text-[16px] text-white">
-                            0.17%
-                          </td>
-                          <td className="px-6 py-4 text-[16px] text-white">
-                            100 AAVE
-                          </td>
-                          <td className="px-6 py-4 text-[16px] text-white">
-                            $4.2M
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            </p> */}
           </div>
         </section>
-        {/* <Modal /> */}
+        {borrowShow && (
+          <Modal
+            show={borrowShow}
+            setShow={setborrowShow}
+            fn={swapTransaction}
+            name={"Borrow"}
+          />
+        )}
+        {returnShow && (
+          <Modal
+            show={returnShow}
+            setShow={setreturnShow}
+            fn={returnSwapTransaction}
+            name={"Return"}
+          />
+        )}
       </div>
     </>
   );
 }
 
-const Modal = () => {
+const Modal = ({ fn, show, setShow, name }) => {
   return (
     <div className="flex items-center justify-center top-0 absolute w-full min-h-screen h-full bg-backdrop">
-      <div className="flex flex-col w-[580px] h-max m-h-[1000px] bg-[#393939] mt-[48px] rounded-lg">
-        <span className="flex items-center w-full justify-center mt-[34px]">
-          <image className="w-12 h-12 mr-5" src="/assets/aave.svg" alt="" />
-          <h1 className="text-white text-[24px]">Aave Token</h1>
-        </span>
-        <h2 className="text-white mx-auto w-min font-medium text-[56px] mt-7">
-          $200
-        </h2>
-        <p className="text-[24px] text-gray-400 mx-auto w-min mt-4">Max </p>
-        <div className="flex w-full justify-center mt-6">
-          <p className="selected w-1/2 text-center text-[24px] font-bold p-4">
-            Supply
-          </p>
-          <p className="un-selected w-1/2 text-center text-[24px] font-bold p-4">
-            Withdraw
-          </p>
-        </div>
-        <div className="px-[33px] py-[27px] ">
-          <p className="font-semibold text-gray-400 border-b w-fit">
-            Supply Rates
-          </p>
-          <Token bdTrue={true} />
-          <Token />
-          <p className="font-semibold text-gray-400 border-b w-fit">
-            Supply Rates
-          </p>
-          <Token bdTrue={true} />
-          <Token bdTrue={true} />
-        </div>
-        <button className="bg-white h-[65px] w-[514px] px-[33px] rounded-3xl text-[24px] font-bold mt-2 mx-auto">
-          Supply
+      <div className="flex flex-col w-auto h-max m-h-[1000px] bg-[#393939] mt-[48px] rounded-lg relative ">
+        <button
+          onClick={() => {
+            setShow(false);
+          }}
+          className="text-gray-400 absolute top-3 right-3 bg-gray-600 p-0 w-5 h-5 m-0 rounded-full flex justify-center items-center"
+        >
+          x
         </button>
-
-        <span className="flex w-full justify-between mx-auto px-8 mt-8 mb-9">
-          <p className="text-center text-[20px] text-gray-400">
-            Wallet Balance
-          </p>
-          <p className="text-center text-[20px] text-gray-400">0.07 ETH</p>
-        </span>
+        <div className="flex flex-col h-max items-center p-10">
+          <p className={"text-white pb-3"}>Enter the Token Amount</p>
+          <input className="w-[300px] h-10 bg-gray-600 text-white px-3 rounded-lg" />
+          <button
+            className="mt-6 text-white bg-neon-grad rounded-lg py-2 w-max px-4"
+            onClick={fn}
+          >
+            {name} Tokens
+          </button>
+        </div>
       </div>
     </div>
   );
