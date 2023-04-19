@@ -193,7 +193,7 @@ function Index() {
             show={borrowShow}
             setShow={setborrowShow}
             fn={swapTransaction}
-            name={"Borow"}
+            name={"Borrow"}
           />
         )}
         {returnShow && (
